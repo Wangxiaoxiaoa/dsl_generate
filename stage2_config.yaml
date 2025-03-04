@@ -1,0 +1,7 @@
+grammar_path: /root/autodl-tmp/xiao/CFG_generate/tmp/stage2/grammars/querylang.g4
+input_path: /root/autodl-tmp/xiao/CFG_generate/tmp/demo.txt
+output_path: /root/autodl-tmp/xiao/CFG_generate/tmp/stage2_output/
+parser_dir: /root/autodl-tmp/xiao/CFG_generate/tmp/stage2_output/grammars/
+rule: query
+max_depth: 100
+jobs: 1
