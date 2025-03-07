@@ -1,100 +1,88 @@
-import os
-from argparse import Namespace
-from math import inf
-from multiprocessing import Pool
-from os.path import exists, join
-
-from antlerinator import process_antlr_argument
-from grammarinator.cli import iter_files, logger, process_tree_format_argument
 from grammarinator.runtime import RuleSize
 from grammarinator.tool import DefaultPopulation, ParserTool
-from inators.arg import process_log_level_argument, process_sys_path_argument, process_sys_recursion_limit_argument
-import sys
-import yaml
+from grammarinator.cli import iter_files
+import os
+from os.path import exists, join
+from multiprocessing import Pool
 
-def process_config(config):
-
-    grammars = [config['grammar_path']] if isinstance(config['grammar_path'], str) else config['grammar_path']
-    for grammar in grammars:
+def parse_files(
+    grammar_files,
+    input_files=None,
+    glob_patterns=None,
+    rule=None,
+    transformers=None,
+    hidden=None,
+    max_depth=RuleSize.max.depth,
+    strict=False,
+    out_dir=os.getcwd(),
+    parser_dir=None,
+    lib_dir=None,
+    tree_extension='.tree',
+    tree_codec='pickle',
+    encoding='utf-8',
+    encoding_errors='strict',
+    cleanup=True,
+    jobs=1,
+    antlr='auto'
+):
+    """
+    解析输入文件并生成语法树
+    
+    Args:
+        grammar_files (list): ANTLR语法文件列表
+        input_files (list, optional): 要处理的输入文件或目录列表
+        glob_patterns (list, optional): 输入文件的通配符模式
+        rule (str, optional): 开始解析的规则名称
+        transformers (list, optional): 用于后处理解析树的转换器列表
+        hidden (list, optional): 要构建到解析树中的隐藏token列表
+        max_depth (int, optional): 最大预期树深度
+        strict (bool, optional): 是否丢弃包含语法错误的测试
+        out_dir (str, optional): 保存树的目录
+        parser_dir (str, optional): 保存解析器语法的目录
+        lib_dir (str, optional): 导入语法的替代位置
+        tree_extension (str, optional): 树文件扩展名
+        tree_codec (str, optional): 树编码格式
+        encoding (str, optional): 输入文件编码
+        encoding_errors (str, optional): 编码错误处理方式
+        cleanup (bool, optional): 是否清理临时文件
+        jobs (int, optional): 并行作业数
+        antlr (str, optional): ANTLR工具路径
+    """
+    # 验证grammar文件是否存在
+    for grammar in grammar_files:
         if not exists(grammar):
             raise ValueError(f'{grammar} does not exist.')
 
-    if 'parser_dir' not in config or not config['parser_dir']:
-        config['parser_dir'] = join(config['output_path'], 'grammars')
+    if not parser_dir:
+        parser_dir = join(out_dir, 'grammars')
 
-    return config
-
-def cfg_parser(config):
-    try:
-        config = process_config(config)
-    except ValueError as e:
-        print(f"错误: {e}")
-        sys.exit(1)
-
-    args = Namespace(
-        grammar=[config['grammar_path']] if isinstance(config['grammar_path'], str) else config['grammar_path'],
-        input=config['input_path'],
-        glob=None,
-        rule=config.get('rule', None),  # 使用get方法设置默认值
-        transformer=config.get('transformer', []),
-        hidden=config.get('hidden', []),
-        max_depth=config.get('max_depth', inf),
-        strict=config.get('strict', False),
-        parser_dir=config['parser_dir'],
-        out=config['output_path'],
-        lib=config.get('lib', None),
-        tree_format=config.get('tree_format', 'json'),
-        tree_codec=config.get('tree_codec', 'json'),
-        tree_extension=config.get('tree_extension', '.tree'),
-        cleanup=config.get('cleanup', True),
-        jobs=config.get('jobs', 1),
-        encoding=config.get('encoding', 'utf-8'),
-        encoding_errors=config.get('encoding_errors', 'strict'),
-        antlr=config.get('antlr', '4.13.0'),
-        sys_path=config.get('sys_path', []),
-        sys_recursion_limit=config.get('sys_recursion_limit', None),
-        log_level=config.get('log_level', None),
-    )
-
-    process_sys_path_argument(args)
-    process_sys_recursion_limit_argument(args)
-    process_antlr_argument(args)
-    process_tree_format_argument(args)
-    if args.log_level:
-        process_log_level_argument(args, logger)
-
-    with ParserTool(grammars=args.grammar, 
-                   hidden=args.hidden, 
-                   transformers=args.transformer, 
-                   parser_dir=args.parser_dir, 
-                   antlr=args.antlr, 
-                   rule=args.rule,
-                   population=DefaultPopulation(args.out, args.tree_extension, codec=args.tree_codec), 
-                   max_depth=args.max_depth, 
-                   strict=args.strict,
-                   lib_dir=args.lib, 
-                   cleanup=args.cleanup, 
-                   encoding=args.encoding, 
-                   errors=args.encoding_errors) as parser_tool:
-        
-        if args.jobs > 1:
-            with Pool(args.jobs) as pool:
+    # 创建参数对象用于兼容原有代码
+    class Args:
+        pass
+    
+    args = Args()
+    args.input = input_files or []
+    args.glob = glob_patterns or []
+    
+    with ParserTool(
+        grammars=grammar_files,
+        hidden=hidden or [],
+        transformers=transformers or [],
+        parser_dir=parser_dir,
+        antlr=antlr,
+        rule=rule,
+        population=DefaultPopulation(out_dir, tree_extension, codec=tree_codec),
+        max_depth=max_depth,
+        strict=strict,
+        lib_dir=lib_dir,
+        cleanup=cleanup,
+        encoding=encoding,
+        errors=encoding_errors
+    ) as parser_tool:
+        if jobs > 1:
+            with Pool(jobs) as pool:
                 for _ in pool.imap_unordered(parser_tool.parse, iter_files(args)):
                     pass
         else:
             for fn in iter_files(args):
                 parser_tool.parse(fn)
-
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("用法: python parser_demo.py config.yaml")
-        sys.exit(1)
-
-    config_file = sys.argv[1]
-    try:
-        with open(config_file, 'r') as f:
-            config = yaml.safe_load(f)
-        cfg_parser(config)
-    except Exception as e:
-        print(f"错误: {e}")
-        sys.exit(1)

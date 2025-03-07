@@ -1,0 +1,32 @@
+dsl2nl_server:
+  model_name: ep-20250102085733-6dx7v
+  prompt_path: /root/autodl-tmp/xiao/CFG_generate/pipelines/prompts/stage3_dsl2nl.txt 
+  api_key: 88ea5643-8049-4f60-abb3-772a2420cf6d
+  url: https://ark.cn-beijing.volces.com/api/v3
+  cot_sample_path: /root/autodl-tmp/xiao/CFG_generate/tmp/stage3_cot_sample.json
+  train_prompt: false
+  train_dataset_path: demo.json
+  
+verify:
+  model_name: ep-20250102085733-6dx7v
+  prompt_path: /root/autodl-tmp/xiao/CFG_generate/pipelines/prompts/stage3_vertify.txt 
+  api_key: 88ea5643-8049-4f60-abb3-772a2420cf6d
+  url: https://ark.cn-beijing.volces.com/api/v3
+
+transform:
+  model_name: ep-20250102085733-6dx7v
+  prompt_path: /root/autodl-tmp/xiao/CFG_generate/pipelines/prompts/stage3_transform.txt 
+  api_key: 88ea5643-8049-4f60-abb3-772a2420cf6d
+  url: https://ark.cn-beijing.volces.com/api/v3
+
+io_related:
+  grammar_path: /root/autodl-tmp/xiao/CFG_generate/grammars/querylang.g4
+  grammar_help_path: /root/autodl-tmp/xiao/CFG_generate/grammars/grammar_help.txt
+  stage2_output_path: /root/autodl-tmp/xiao/CFG_generate/tmp/stage2_output.txt
+  stage3_output_path: /root/autodl-tmp/xiao/CFG_generate/tmp/stage3_output.json
+  roles_path: /root/autodl-tmp/xiao/CFG_generate/pipelines/roles/persona.json
+
+control:
+  dsl2nl_epochs: 3
+  transform_epochs: 3
+  num_jobs: 8
