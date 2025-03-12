@@ -1,20 +1,20 @@
 verify:
-  model_name: ep-20250102085733-6dx7v
+  model_name: qwen_72b_awq
   prompt_path: pipelines/prompts/stage2_vertify.txt
-  api_key: 88ea5643-8049-4f60-abb3-772a2420cf6d
-  url: https://ark.cn-beijing.volces.com/api/v3
+  api_key: uos_xiao
+  url: https://u468127-bfba-8e9ec43e.westx.seetacloud.com:8443/v1
 
 transform:
-  model_name: ep-20250102085733-6dx7v
+  model_name: qwen_72b_awq
   prompt_path: pipelines/prompts/stage2_transform.txt 
-  api_key: 88ea5643-8049-4f60-abb3-772a2420cf6d
-  url: https://ark.cn-beijing.volces.com/api/v3
+  api_key: uos_xiao
+  url: https://u468127-bfba-8e9ec43e.westx.seetacloud.com:8443/v1
 
 fill_regex:
-  model_name: ep-20250102085733-6dx7v
+  model_name: qwen_72b_awq
   prompt_path: pipelines/prompts/stage2_fill_regex.txt
-  api_key: 88ea5643-8049-4f60-abb3-772a2420cf6d
-  url: https://ark.cn-beijing.volces.com/api/v3
+  api_key: uos_xiao
+  url: https://u468127-bfba-8e9ec43e.westx.seetacloud.com:8443/v1
   cot_sample_path: 
   train_prompt: false
   train_dataset_path: demo.json

@@ -13,9 +13,9 @@ class DSL2NL_General(dspy.Module):
     def __init__(self, model_name, api_key, url, prompt_template):
         super().__init__()
         self.prompt_template = prompt_template
-        model_name = "openai/" + model_name
-        self.llm = dspy.LM(model_name, api_key=api_key, api_base=url)
-        dspy.configure(lm=self.llm)
+        # model_name = "openai/" + model_name
+        # self.llm = dspy.LM(model_name, api_key=api_key, api_base=url)
+        # dspy.configure(lm=self.llm)
         self.predictor = dspy.Predict(DSL2NL_General_Signature)
 
     def forward(self, grammar, grammar_help, dsl_sentence, human_role,cot_sample):
@@ -34,9 +34,9 @@ class DSL2NL_Train(dspy.Module):
     def __init__(self, model_name, api_key, url, prompt_template):
         super().__init__()
         self.prompt_template = prompt_template
-        model_name = "openai/" + model_name
-        self.llm = dspy.LM(model_name, api_key=api_key, api_base=url)
-        dspy.configure(lm=self.llm)
+        # model_name = "openai/" + model_name
+        # self.llm = dspy.LM(model_name, api_key=api_key, api_base=url)
+        # dspy.configure(lm=self.llm)
         self.predictor = dspy.Predict(DSL2NL_General_Signature)
 
     def load_dataset(self, dataset_path):

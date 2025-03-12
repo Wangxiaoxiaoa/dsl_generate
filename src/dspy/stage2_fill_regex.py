@@ -18,9 +18,9 @@ class ReactProcess(Signature):
 class CoTWithValidation(Module):
     def __init__(self,model_name, api_key, url, max_retries=3, special_tokens=[]):
         super().__init__()
-        model_name = "openai/" + model_name
-        self.llm = dspy.LM(model_name, api_key=api_key, api_base=url)
-        dspy.configure(lm=self.llm)
+        # model_name = "openai/" + model_name
+        # self.llm = dspy.LM(model_name, api_key=api_key, api_base=url)
+        # dspy.configure(lm=self.llm)
         self.generate = ChainOfThought(StatementGeneration)
         self.react_correct = dspy.Predict(ReactProcess)
         self.max_retries = max_retries
@@ -68,9 +68,9 @@ class CoTWithValidation(Module):
 class CoTWithValidation_Train(Module):
     def __init__(self, model_name, api_key, url, max_retries=3, special_tokens=[]):
         super().__init__()
-        model_name = "openai/" + model_name
-        self.llm = dspy.LM(model_name, api_key=api_key, api_base=url)
-        dspy.configure(lm=self.llm)
+        # model_name = "openai/" + model_name
+        # self.llm = dspy.LM(model_name, api_key=api_key, api_base=url)
+        # dspy.configure(lm=self.llm)
         self.max_retries = max_retries
         self.special_tokens = special_tokens
         self.cot_module = CoTWithValidation(model_name, api_key, url, max_retries, special_tokens)

@@ -5,8 +5,9 @@ from src.dspy.stage2_verity import verify
 from src.dspy.stage2_fill_regex import fill_regex
 from src.dspy.stage2_transform import transform
 from tqdm import tqdm
-from multiprocessing import Pool
+from concurrent.futures import ThreadPoolExecutor
 import sys
+import dspy
 from src.tools.save_file import save_file
 from src.tools.logger import Logger
 
@@ -75,10 +76,13 @@ def architecture(stage2_config):
     skeleton_sentence_list = read_stage1_output(stage2_config.stage1_output_path)
     logger.info(f"read stage1 output done, total: {len(skeleton_sentence_list)} sentences")
     logger.info(f"begin to process with {stage2_config.num_jobs} jobs")
-    with Pool(processes=stage2_config.num_jobs) as pool:
+    model_name = "openai/" + stage2_config.v_model_name
+    llm = dspy.LM(model_name, api_key=stage2_config.v_api_key, api_base=stage2_config.v_url)
+    dspy.configure(lm=llm)
+    with ThreadPoolExecutor(max_workers=stage2_config.num_jobs) as executor:
         args = [(stage2_config, sentence) for sentence in skeleton_sentence_list]
-        for _ in tqdm(pool.imap_unordered(process_wrapper, args), total=len(skeleton_sentence_list)):
-            pass
+        list(tqdm(executor.map(lambda x: process_wrapper(x), args), total=len(skeleton_sentence_list)))
+
     
 def stage2(config_path):
     config = parse_yaml(config_path)

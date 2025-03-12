@@ -10,9 +10,9 @@ class Transform(dspy.Module):
     def __init__(self, model_name, api_key, url, prompt_template):
         super().__init__()
         self.prompt_template = prompt_template
-        model_name = "openai/" + model_name
-        self.llm = dspy.LM(model_name, api_key=api_key, api_base=url)
-        dspy.configure(lm=self.llm)
+        # model_name = "openai/" + model_name
+        # self.llm = dspy.LM(model_name, api_key=api_key, api_base=url)
+        # dspy.configure(lm=self.llm)
         self.predictor = dspy.Predict(DspyTransformSignature)
 
     def forward(self, grammar, grammar_help, sentence, special_token1, special_token2,error_msg):
