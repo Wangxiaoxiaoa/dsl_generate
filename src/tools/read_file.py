@@ -1,5 +1,6 @@
 import json
 from datasets import load_dataset
+import random
 
 def read_file(file_path):
     if file_path.endswith('.json'):
@@ -29,3 +30,10 @@ def read_stage2_output(file_path):
         for line in file:
             complete_sentence.append(line.strip())
     return complete_sentence
+
+def read_roles(file_path):
+    roles = list()
+    with open(file_path, 'r') as file:
+        for line in file:
+            roles.append(line.strip())
+    return random.choice(roles)

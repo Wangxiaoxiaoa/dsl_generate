@@ -11,7 +11,6 @@ class CFG_UnlexerRuleContext(RuleContext):
 
     def __init__(self, gen, name, parent=None, immutable=False):
         if isinstance(parent, UnlexerRule):
-
             super().__init__(gen, parent)
             self._start_depth = None
             self._parent_name = parent.name
@@ -26,7 +25,6 @@ class CFG_UnlexerRuleContext(RuleContext):
             self._name = name
 
     def __enter__(self):
-
         if self._name is not None and self._parent_name is not None:
             self.node.name = self._name
         super().__enter__()
@@ -41,7 +39,6 @@ class CFG_UnlexerRuleContext(RuleContext):
             self.node.size.depth -= self._start_depth
         if self._name is not None and self._parent_name is not None:
             self.node.name = self._parent_name
-
 
 class CFG_UnparserRuleContext(UnparserRuleContext):
     def __init__(self, gen, name, parent=None):

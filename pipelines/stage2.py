@@ -1,18 +1,26 @@
 from src.tools.parser_yaml import parse_yaml
 from src.tools.read_file import read_stage1_output
-from src.tools.config_process import Stage2_Config, stage2_process_server_config, stage2_process_common_config, stage2_process_regex_config, stage2_process_control_config
-from src.dspy.stage2_verfication_filter import verify
+from src.tools.config_process import Stage2_Config, stage2_process_verify_config, stage2_process_common_config, stage2_process_regex_config, stage2_process_control_config, stage2_process_fill_regex_config, stage2_process_transform_config
+from src.dspy.stage2_verity import verify
 from src.dspy.stage2_fill_regex import fill_regex
 from src.dspy.stage2_transform import transform
 from tqdm import tqdm
 from multiprocessing import Pool
 import sys
 from src.tools.save_file import save_file
+from src.tools.logger import Logger
+
+logger = Logger("stage2")
 
 def process(stage2_config, skeleton_sentence):
     verify_flag = verify(
-        stage2_config.v_model_name, stage2_config.v_api_key, stage2_config.v_url,
-        stage2_config.v_prompt, stage2_config.grammar_help, skeleton_sentence,
+        stage2_config.v_model_name, 
+        stage2_config.v_api_key, 
+        stage2_config.v_url,
+        stage2_config.grammar,           
+        stage2_config.grammar_help, 
+        skeleton_sentence,
+        stage2_config.v_prompt,         
         stage2_config.re_lexical_rules_special_token
     )
     if not verify_flag:
@@ -25,11 +33,16 @@ def process(stage2_config, skeleton_sentence):
                 stage2_config.transform_prompt, stage2_config.grammar_help,
                 skeleton_sentence,  
                 stage2_config.re_lexical_rules_special_token,
-                error_msg=error_msg
+                error_msg=error_msg,
             )
             verify_flag = verify(
-                stage2_config.v_model_name, stage2_config.v_api_key, stage2_config.v_url,
-                stage2_config.v_prompt, stage2_config.grammar_help, transform_sentence,
+                stage2_config.v_model_name, 
+                stage2_config.v_api_key, 
+                stage2_config.v_url,
+                stage2_config.grammar,           
+                stage2_config.grammar_help, 
+                skeleton_sentence,
+                stage2_config.v_prompt,         
                 stage2_config.re_lexical_rules_special_token
             )
             if verify_flag:
@@ -42,24 +55,67 @@ def process(stage2_config, skeleton_sentence):
             stage2_config.fill_regex_model_name, stage2_config.fill_regex_api_key,
             stage2_config.fill_regex_url, stage2_config.fill_regex_prompt,
             stage2_config.grammar, stage2_config.grammar_help, skeleton_sentence,
-            stage2_config.fill_regex_max_retries, stage2_config.re_lexical_rules_special_token
+            stage2_config.fill_regex_max_retries, stage2_config.re_lexical_rules_special_token,
+            stage2_config.fill_regex_cot_sample_path, 
+            stage2_config.fill_regex_train_prompt, 
+            stage2_config.fill_regex_train_dataset_path,
+            stage2_config.fill_regex_train_metric,
+            stage2_config.fill_regex_train_metric_threshold,
+            stage2_config.parser_dir
         )
         if result_flag:
             save_file(stage2_config.stage2_output_path, complete_sentence, 'a')
 
-def architecture(stage2_config):
-    skeleton_sentence_list = read_stage1_output(stage2_config.stage1_output_path)
-    with Pool(processes=stage2_config.num_jobs) as pool:
-        list(tqdm(pool.imap(process, [(stage2_config, sentence) for sentence in skeleton_sentence_list]), total=len(skeleton_sentence_list)))
+def process_wrapper(args):
+    config, sentence = args
+    return process(config, sentence)
 
+def architecture(stage2_config):
+    logger.info(f"begin to read stage1 output")
+    skeleton_sentence_list = read_stage1_output(stage2_config.stage1_output_path)
+    logger.info(f"read stage1 output done, total: {len(skeleton_sentence_list)} sentences")
+    logger.info(f"begin to process with {stage2_config.num_jobs} jobs")
+    with Pool(processes=stage2_config.num_jobs) as pool:
+        args = [(stage2_config, sentence) for sentence in skeleton_sentence_list]
+        for _ in tqdm(pool.imap_unordered(process_wrapper, args), total=len(skeleton_sentence_list)):
+            pass
+    
 def stage2(config_path):
     config = parse_yaml(config_path)
-    grammar, grammar_help, stage1_output_path, stage2_output_path = stage2_process_common_config(config)
+    logger.info(f"stage2 config: {config}")
+
+    (grammar, 
+     grammar_help, 
+     stage1_output_path, 
+     stage2_output_path) = stage2_process_common_config(config)
+    
     re_lexical_rules_special_token = stage2_process_regex_config(config)
-    transform_epochs, fill_regex_max_retries = stage2_process_control_config(config)
-    v_model_name, v_api_key, v_url, v_prompt = stage2_process_server_config(config, 'rationality_verification')
-    fill_regex_model_name, fill_regex_api_key, fill_regex_url, fill_regex_prompt = stage2_process_server_config(config, 'fill_regex')
-    transform_model_name, transform_api_key, transform_url, transform_prompt = stage2_process_server_config(config, 'transform')
+    
+    (transform_epochs, 
+     fill_regex_max_retries,
+     num_jobs) = stage2_process_control_config(config)
+    
+    (v_model_name, 
+     v_api_key, 
+     v_url, 
+     v_prompt) = stage2_process_verify_config(config)
+    
+    (fill_regex_model_name,
+     fill_regex_api_key, 
+     fill_regex_url,
+     fill_regex_prompt,
+     fill_regex_cot_sample_path,
+     fill_regex_train_prompt,
+     fill_regex_train_dataset_path,
+     fill_regex_train_metric,
+     fill_regex_train_metric_threshold,
+     parser_dir) = stage2_process_fill_regex_config(config)
+    
+    (transform_model_name,
+     transform_api_key,
+     transform_url,
+     transform_prompt) = stage2_process_transform_config(config)
+    
     stage2_config = Stage2_Config(
         grammar,
         grammar_help,
@@ -79,7 +135,14 @@ def stage2(config_path):
         transform_model_name,
         transform_api_key,
         transform_url,
-        transform_prompt
+        transform_prompt,
+        fill_regex_cot_sample_path,
+        fill_regex_train_prompt,
+        fill_regex_train_dataset_path,
+        fill_regex_train_metric,
+        fill_regex_train_metric_threshold,
+        parser_dir,
+        num_jobs
     )
     architecture(stage2_config)
 

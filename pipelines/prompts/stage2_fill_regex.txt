@@ -2,7 +2,7 @@
 antlr语法规则：
 {grammar}
 antlr语法辅助说明：
-{antlr_help}
+{grammar_help}
 语句：
 {sentence}
 其中语句中存在两个特殊token：

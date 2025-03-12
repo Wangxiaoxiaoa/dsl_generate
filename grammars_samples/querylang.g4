@@ -37,7 +37,7 @@ dateSearchinfo:
     | 'DATE' SPACE comparison_type SPACE relativelydate
     ;
 relativelydate: 'CURRENT' SPACE '-' SPACE string;
-absolutedate: STRING_VALUE;
+absolutedate: STRING;
 
 pathSearch: 'PATH' SPACE is_or_not SPACE string;
 nameSearch: 'NAME' SPACE 'CONTAINS' SPACE string;
@@ -56,10 +56,11 @@ contentSearch:
 comparison_type: '=' | '<' | '>' | '!=' | '<=' | '>=';
 
 
-string: STRING_VALUE;
-filename: STRING_VALUE;
+string: STRING;
+filename: STRING;
 
 SPACE: ' ';
-STRING_VALUE: '"' .*? '"';
+STRING: '"' STRING_CONTENT '"';
+fragment STRING_CONTENT: .*?;
 is_or_not: 'IS' | 'IS NOT';
 NUMBER_VALUE: [0-9]+;

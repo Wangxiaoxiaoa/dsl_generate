@@ -17,7 +17,10 @@ from inators.imp import import_object
 from src.generate.generater import CFG_GeneratorTool
 from src.process.processor import CFGProcessorTool
 from src.tools.parser_yaml import parse_yaml
+from src.parse.parse import build_grammars
+from src.tools.logger import Logger
 
+logger = Logger("stage1")
 
 def process_grammar_programmatically(
     grammar_files,           
@@ -140,16 +143,17 @@ def generate_grammars(
             for i in count(0) if args.n == inf else range(args.n):
                 create_test(generator_tool, i, seed=args.random_seed)
 
-
 def stage1(yaml_file):
     config = parse_yaml(yaml_file)
+    logger.info(f"stage1 config: {config}")
+    logger.info(f"begin to process grammar programmatically")
     process_grammar_programmatically(
         grammar_files=[config['grammar_path']] if isinstance(config['grammar_path'], str) else config['grammar_path'],
         default_rule=config['start_rule'],
         re_lexical_rules_special_token=config['re_lexical_rules_special_token'],
         re_lexical_rules = config['re_lexical_rules']
     )
-
+    logger.info(f"begin to generate grammars")
     generate_grammars(
         generator_path='src.generate.cfg_generate.querylangGenerator.querylangGenerator',
         output_dir = config['output_dir'], 
@@ -160,7 +164,8 @@ def stage1(yaml_file):
         jobs = config['jobs'],
         max_tokens=config['max_tokens']
     )
-
+    logger.info(f"begin to build grammars")
+    build_grammars(config['grammar_path'], config['parser_dir'])
 
 if __name__ == '__main__':
     config_file = sys.argv[1]

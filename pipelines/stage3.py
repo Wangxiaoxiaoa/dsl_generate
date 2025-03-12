@@ -10,90 +10,130 @@ import sys
 from src.tools.save_file import save_file
 
 
-def process(stage3_config, complete_sentence):
-    for _ in range(Stage3_Config.dsl2nl_epochs):
+def process(config_sentence_pair):
+    stage3_config, complete_sentence = config_sentence_pair
+    for _ in range(stage3_config.dsl2nl_epochs):
         nl_sentence = dsl2nl(
             stage3_config.d2n_model_name,
+            stage3_config.d2n_prompt_path,
             stage3_config.d2n_api_key,
             stage3_config.d2n_url,
-            stage3_config.grammar,
-            stage3_config.grammar_help,
+            stage3_config.d2n_cot_sample_path,
+            stage3_config.d2n_train_prompt,
+            stage3_config.d2n_train_dataset_path,
+            stage3_config.d2n_train_metric,
+            stage3_config.d2n_train_metric_threshold,
+            stage3_config.grammar_path,
+            stage3_config.grammar_help_path,
             complete_sentence,
             stage3_config.roles_path,
-            cot_sample=stage3_config.cot_sample_path,
-            train_prompt=stage3_config.d2n_train_prompt,
-            train_dataset_path=stage3_config.d2n_train_dataset_path
             )
-        vertify_result = verify(
+        verify_result = verify(
             stage3_config.v_model_name,
             stage3_config.v_api_key,
             stage3_config.v_url,
-            stage3_config.v_prompt,
+            stage3_config.v_prompt_path,
+            stage3_config.grammar_path,
+            stage3_config.grammar_help_path,
+            complete_sentence,
             nl_sentence
         )
-        if vertify_result == "True":
+        if verify_result == True:
             dsl_nl_pair = {
-                "dsl": complete_sentence,
-                "nl": nl_sentence
+                "nl": nl_sentence,
+                "dsl": complete_sentence
             }
             save_file(stage3_config.stage3_output_path, dsl_nl_pair, "a")
             break
         else:
-            for _ in range(Stage3_Config.transform_epochs):
-                transform_result = transform(
+            for _ in range(stage3_config.transform_epochs):
+                transform_nl = transform(
                     stage3_config.t_model_name,
                     stage3_config.t_api_key,
                     stage3_config.t_url,
-                    stage3_config.t_prompt,
+                    stage3_config.grammar_path,
+                    stage3_config.grammar_help_path,
+                    complete_sentence,
                     nl_sentence
                 )
-                vertify_result = verify(
+                verify_result = verify(
                     stage3_config.v_model_name,
                     stage3_config.v_api_key,
                     stage3_config.v_url,
-                    stage3_config.v_prompt,
-                    transform_result
+                    stage3_config.v_prompt_path,
+                    stage3_config.grammar_path,
+                    stage3_config.grammar_help_path,
+                    complete_sentence,
+                    transform_nl
                 )
-                if vertify_result == "True":
+                if verify_result == True:
                     dsl_nl_pair = {
                         "dsl": complete_sentence,
-                        "nl": transform_result
+                        "nl": transform_nl
                     }
                     save_file(stage3_config.stage3_output_path, dsl_nl_pair, "a")
                     break
 
-
-
 def architecture(stage3_config):
     complete_sentence_list = read_stage2_output(stage3_config.stage2_output_path)
     with Pool(processes=stage3_config.num_jobs) as pool:
-        list(tqdm(pool.imap(process, [(stage3_config, sentence) for sentence in complete_sentence_list]), total=len(complete_sentence_list)))
-
+        tasks = [(stage3_config, sentence) for sentence in complete_sentence_list]
+        list(tqdm(pool.imap(process, tasks), total=len(complete_sentence_list)))
 
 def stage3(config_path):
     config = parse_yaml(config_path)
-    d2n_model_name, d2n_api_key, d2n_url, d2n_prompt, d2n_train_prompt, d2n_train_dataset_path, cot_sample_path = stage3_dsl2nl_server_config(config)
-    v_model_name, v_api_key, v_url, v_prompt = stage3_verify_server_config(config)
-    t_model_name, t_api_key, t_url, t_prompt = stage3_transform_server_config(config)
-    grammar, grammar_help, stage2_output_path, stage3_output_path, roles_path = stage3_io_related_config(config)
-    dsl2nl_epochs, transform_epochs, num_jobs = stage3_control_config(config)
+    
+    (d2n_model_name,
+     d2n_prompt_path,  
+     d2n_api_key,
+     d2n_url,
+     d2n_cot_sample_path,
+     d2n_train_prompt,
+     d2n_train_dataset_path,
+     d2n_train_metric,
+     d2n_train_metric_threshold) = stage3_dsl2nl_server_config(config)  
+   
+    (v_model_name,
+     v_prompt_path,  
+     v_api_key,
+     v_url) = stage3_verify_server_config(config)
+    
+    (t_model_name,
+    t_prompt_path,  
+    t_api_key,
+    t_url) = stage3_transform_server_config(config)
+    
+    (grammar_path,
+     grammar_help_path,
+     stage2_output_path,
+     stage3_output_path,
+     roles_path) = stage3_io_related_config(config)
+    
+    (dsl2nl_epochs,
+     transform_epochs,
+     num_jobs) = stage3_control_config(config)
+    
+
     stage3_config = Stage3_Config(
         d2n_model_name,
-        d2n_api_key, 
+        d2n_prompt_path,
+        d2n_api_key,
         d2n_url,
-        d2n_prompt,
+        d2n_cot_sample_path,
         d2n_train_prompt,
         d2n_train_dataset_path,
+        d2n_train_metric,
+        d2n_train_metric_threshold,
         v_model_name,
+        v_prompt_path,
         v_api_key,
         v_url,
-        v_prompt,
         t_model_name,
+        t_prompt_path,
         t_api_key,
         t_url,
-        t_prompt,
-        grammar,
-        grammar_help,
+        grammar_path,
+        grammar_help_path,
         stage2_output_path,
         stage3_output_path,
         roles_path,

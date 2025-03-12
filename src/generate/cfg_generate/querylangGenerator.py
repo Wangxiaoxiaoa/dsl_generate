@@ -65,22 +65,22 @@ class querylangGenerator(Generator):
         with CFG_UnparserRuleContext(self, 'dateSearch', parent) as rule:
             current = rule.current
             self.binaryDateSearch(parent=current)
-            with CFG_QuantifierContext(rule, 0, 0, inf, querylangGenerator._quant_sizes[1], 0) as quant0:
+            with CFG_QuantifierContext(rule, 0, 0, inf, querylangGenerator._quant_sizes[2], 0) as quant0:
                 while quant0(rule._name,querylangGenerator._lexicals):
                     with QuantifiedContext(rule):
                         current = rule.current
-                        with AlternationContext(rule, 0, querylangGenerator._alt_sizes[0], 0, querylangGenerator._alt_conds[0]) as alt0:
+                        with AlternationContext(rule, 0, querylangGenerator._alt_sizes[3], 0, querylangGenerator._alt_conds[0]) as alt0:
                             current = rule.current
                             choice0 = alt0()
                             if choice0 == 0:
-                                self._reserve(7, self.SPACE, parent=current)
-                                self._reserve(6, self.T__0, parent=current)
-                                self._reserve(5, self.SPACE, parent=current)
+                                self._reserve(8, self.SPACE, parent=current)
+                                self._reserve(7, self.T__0, parent=current)
+                                self._reserve(6, self.SPACE, parent=current)
                                 self.binaryDateSearch(parent=current)
                             elif choice0 == 1:
-                                self._reserve(7, self.SPACE, parent=current)
-                                self._reserve(6, self.T__1, parent=current)
-                                self._reserve(5, self.SPACE, parent=current)
+                                self._reserve(8, self.SPACE, parent=current)
+                                self._reserve(7, self.T__1, parent=current)
+                                self._reserve(6, self.SPACE, parent=current)
                                 self.binaryDateSearch(parent=current)
                         current = rule.current
             current = rule.current
@@ -89,11 +89,11 @@ class querylangGenerator(Generator):
     def binaryDateSearch(self, parent=None):
         with CFG_UnparserRuleContext(self, 'binaryDateSearch', parent) as rule:
             current = rule.current
-            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[3], 0, querylangGenerator._alt_conds[0]) as alt0:
+            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[4], 0, querylangGenerator._alt_conds[0]) as alt0:
                 current = rule.current
                 choice0 = alt0()
                 if choice0 == 0:
-                    self._reserve(6, self.T__2, parent=current)
+                    self._reserve(7, self.T__2, parent=current)
                     self._reserve(1, self.dateSearchinfo, parent=current)
                     self.T__3(parent=current)
                 elif choice0 == 1:
@@ -104,20 +104,20 @@ class querylangGenerator(Generator):
     def dateSearchinfo(self, parent=None):
         with CFG_UnparserRuleContext(self, 'dateSearchinfo', parent) as rule:
             current = rule.current
-            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[4], 0, querylangGenerator._alt_conds[0]) as alt0:
+            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[5], 0, querylangGenerator._alt_conds[0]) as alt0:
                 current = rule.current
                 choice0 = alt0()
                 if choice0 == 0:
-                    self._reserve(4, self.T__4, parent=current)
-                    self._reserve(3, self.SPACE, parent=current)
-                    self._reserve(2, self.comparison_type, parent=current)
-                    self._reserve(1, self.SPACE, parent=current)
+                    self._reserve(5, self.T__4, parent=current)
+                    self._reserve(4, self.SPACE, parent=current)
+                    self._reserve(3, self.comparison_type, parent=current)
+                    self._reserve(2, self.SPACE, parent=current)
                     self.absolutedate(parent=current)
                 elif choice0 == 1:
-                    self._reserve(8, self.T__4, parent=current)
-                    self._reserve(7, self.SPACE, parent=current)
-                    self._reserve(6, self.comparison_type, parent=current)
-                    self._reserve(5, self.SPACE, parent=current)
+                    self._reserve(9, self.T__4, parent=current)
+                    self._reserve(8, self.SPACE, parent=current)
+                    self._reserve(7, self.comparison_type, parent=current)
+                    self._reserve(6, self.SPACE, parent=current)
                     self.relativelydate(parent=current)
             current = rule.current
         return current
@@ -125,58 +125,58 @@ class querylangGenerator(Generator):
     def relativelydate(self, parent=None):
         with CFG_UnparserRuleContext(self, 'relativelydate', parent) as rule:
             current = rule.current
-            self._reserve(4, self.T__5, parent=current)
-            self._reserve(3, self.SPACE, parent=current)
-            self._reserve(2, self.T__6, parent=current)
-            self._reserve(1, self.SPACE, parent=current)
+            self._reserve(5, self.T__5, parent=current)
+            self._reserve(4, self.SPACE, parent=current)
+            self._reserve(3, self.T__6, parent=current)
+            self._reserve(2, self.SPACE, parent=current)
             self.string(parent=current)
         return current
 
     def absolutedate(self, parent=None):
         with CFG_UnparserRuleContext(self, 'absolutedate', parent) as rule:
             current = rule.current
-            self.STRING_VALUE(parent=current)
+            self.STRING(parent=current)
         return current
 
     def pathSearch(self, parent=None):
         with CFG_UnparserRuleContext(self, 'pathSearch', parent) as rule:
             current = rule.current
-            self._reserve(4, self.T__7, parent=current)
-            self._reserve(3, self.SPACE, parent=current)
-            self._reserve(2, self.is_or_not, parent=current)
-            self._reserve(1, self.SPACE, parent=current)
+            self._reserve(5, self.T__7, parent=current)
+            self._reserve(4, self.SPACE, parent=current)
+            self._reserve(3, self.is_or_not, parent=current)
+            self._reserve(2, self.SPACE, parent=current)
             self.string(parent=current)
         return current
 
     def nameSearch(self, parent=None):
         with CFG_UnparserRuleContext(self, 'nameSearch', parent) as rule:
             current = rule.current
-            self._reserve(4, self.T__8, parent=current)
-            self._reserve(3, self.SPACE, parent=current)
-            self._reserve(2, self.T__9, parent=current)
-            self._reserve(1, self.SPACE, parent=current)
+            self._reserve(5, self.T__8, parent=current)
+            self._reserve(4, self.SPACE, parent=current)
+            self._reserve(3, self.T__9, parent=current)
+            self._reserve(2, self.SPACE, parent=current)
             self.string(parent=current)
         return current
 
     def sizeSearch(self, parent=None):
         with CFG_UnparserRuleContext(self, 'sizeSearch', parent) as rule:
             current = rule.current
-            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[5], 0, querylangGenerator._alt_conds[0]) as alt0:
+            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[6], 0, querylangGenerator._alt_conds[0]) as alt0:
                 current = rule.current
                 choice0 = alt0()
                 if choice0 == 0:
-                    self._reserve(4, self.T__10, parent=current)
-                    self._reserve(3, self.SPACE, parent=current)
-                    self._reserve(2, self.comparison_type, parent=current)
-                    self._reserve(1, self.SPACE, parent=current)
+                    self._reserve(5, self.T__10, parent=current)
+                    self._reserve(4, self.SPACE, parent=current)
+                    self._reserve(3, self.comparison_type, parent=current)
+                    self._reserve(2, self.SPACE, parent=current)
                     self.string(parent=current)
                 elif choice0 == 1:
-                    self._reserve(6, self.T__10, parent=current)
-                    self._reserve(5, self.SPACE, parent=current)
-                    self._reserve(4, self.comparison_type, parent=current)
-                    self._reserve(3, self.SPACE, parent=current)
-                    self._reserve(2, self.T__11, parent=current)
-                    self._reserve(1, self.SPACE, parent=current)
+                    self._reserve(7, self.T__10, parent=current)
+                    self._reserve(6, self.SPACE, parent=current)
+                    self._reserve(5, self.comparison_type, parent=current)
+                    self._reserve(4, self.SPACE, parent=current)
+                    self._reserve(3, self.T__11, parent=current)
+                    self._reserve(2, self.SPACE, parent=current)
                     self.filename(parent=current)
             current = rule.current
         return current
@@ -184,38 +184,38 @@ class querylangGenerator(Generator):
     def typeSearch(self, parent=None):
         with CFG_UnparserRuleContext(self, 'typeSearch', parent) as rule:
             current = rule.current
-            self._reserve(4, self.T__12, parent=current)
-            self._reserve(3, self.SPACE, parent=current)
-            self._reserve(2, self.is_or_not, parent=current)
-            self._reserve(1, self.SPACE, parent=current)
+            self._reserve(5, self.T__12, parent=current)
+            self._reserve(4, self.SPACE, parent=current)
+            self._reserve(3, self.is_or_not, parent=current)
+            self._reserve(2, self.SPACE, parent=current)
             self.string(parent=current)
         return current
 
     def durationSearch(self, parent=None):
         with CFG_UnparserRuleContext(self, 'durationSearch', parent) as rule:
             current = rule.current
-            self._reserve(4, self.T__13, parent=current)
-            self._reserve(3, self.SPACE, parent=current)
-            self._reserve(2, self.comparison_type, parent=current)
-            self._reserve(1, self.SPACE, parent=current)
+            self._reserve(5, self.T__13, parent=current)
+            self._reserve(4, self.SPACE, parent=current)
+            self._reserve(3, self.comparison_type, parent=current)
+            self._reserve(2, self.SPACE, parent=current)
             self.string(parent=current)
         return current
 
     def metaSearch(self, parent=None):
         with CFG_UnparserRuleContext(self, 'metaSearch', parent) as rule:
             current = rule.current
-            self._reserve(12, self.T__14, parent=current)
+            self._reserve(14, self.T__14, parent=current)
+            self._reserve(13, self.SPACE, parent=current)
+            self._reserve(12, self.T__15, parent=current)
             self._reserve(11, self.SPACE, parent=current)
-            self._reserve(10, self.T__15, parent=current)
-            self._reserve(9, self.SPACE, parent=current)
-            self._reserve(8, self.string, parent=current)
-            self._reserve(7, self.SPACE, parent=current)
-            self._reserve(6, self.T__16, parent=current)
-            self._reserve(5, self.SPACE, parent=current)
-            self._reserve(4, self.T__17, parent=current)
-            self._reserve(3, self.SPACE, parent=current)
-            self._reserve(2, self.is_or_not, parent=current)
-            self._reserve(1, self.SPACE, parent=current)
+            self._reserve(9, self.string, parent=current)
+            self._reserve(8, self.SPACE, parent=current)
+            self._reserve(7, self.T__16, parent=current)
+            self._reserve(6, self.SPACE, parent=current)
+            self._reserve(5, self.T__17, parent=current)
+            self._reserve(4, self.SPACE, parent=current)
+            self._reserve(3, self.is_or_not, parent=current)
+            self._reserve(2, self.SPACE, parent=current)
             self.string(parent=current)
         return current
 
@@ -232,22 +232,22 @@ class querylangGenerator(Generator):
     def contentSearch(self, parent=None):
         with CFG_UnparserRuleContext(self, 'contentSearch', parent) as rule:
             current = rule.current
-            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[5], 0, querylangGenerator._alt_conds[0]) as alt0:
+            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[6], 0, querylangGenerator._alt_conds[0]) as alt0:
                 current = rule.current
                 choice0 = alt0()
                 if choice0 == 0:
-                    self._reserve(4, self.T__20, parent=current)
-                    self._reserve(3, self.SPACE, parent=current)
-                    self._reserve(2, self.T__9, parent=current)
-                    self._reserve(1, self.SPACE, parent=current)
+                    self._reserve(5, self.T__20, parent=current)
+                    self._reserve(4, self.SPACE, parent=current)
+                    self._reserve(3, self.T__9, parent=current)
+                    self._reserve(2, self.SPACE, parent=current)
                     self.string(parent=current)
                 elif choice0 == 1:
-                    self._reserve(6, self.T__20, parent=current)
-                    self._reserve(5, self.SPACE, parent=current)
-                    self._reserve(4, self.T__21, parent=current)
-                    self._reserve(3, self.SPACE, parent=current)
-                    self._reserve(2, self.T__22, parent=current)
-                    self._reserve(1, self.SPACE, parent=current)
+                    self._reserve(7, self.T__20, parent=current)
+                    self._reserve(6, self.SPACE, parent=current)
+                    self._reserve(5, self.T__21, parent=current)
+                    self._reserve(4, self.SPACE, parent=current)
+                    self._reserve(3, self.T__22, parent=current)
+                    self._reserve(2, self.SPACE, parent=current)
                     self.filename(parent=current)
             current = rule.current
         return current
@@ -255,7 +255,7 @@ class querylangGenerator(Generator):
     def comparison_type(self, parent=None):
         with CFG_UnparserRuleContext(self, 'comparison_type', parent) as rule:
             current = rule.current
-            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[6], 0, querylangGenerator._alt_conds[2]) as alt0:
+            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[7], 0, querylangGenerator._alt_conds[2]) as alt0:
                 current = rule.current
                 [self.T__19, self.T__23, self.T__24, self.T__25, self.T__26, self.T__27][alt0()](parent=current)
             current = rule.current
@@ -264,13 +264,13 @@ class querylangGenerator(Generator):
     def string(self, parent=None):
         with CFG_UnparserRuleContext(self, 'string', parent) as rule:
             current = rule.current
-            self.STRING_VALUE(parent=current)
+            self.STRING(parent=current)
         return current
 
     def filename(self, parent=None):
         with CFG_UnparserRuleContext(self, 'filename', parent) as rule:
             current = rule.current
-            self.STRING_VALUE(parent=current)
+            self.STRING(parent=current)
         return current
 
     def SPACE(self, parent=None):
@@ -279,10 +279,17 @@ class querylangGenerator(Generator):
             current.src += ' '
         return current
 
-    def STRING_VALUE(self, parent=None):
-        with CFG_UnlexerRuleContext(self, 'STRING_VALUE', parent) as rule:
+    def STRING(self, parent=None):
+        with CFG_UnlexerRuleContext(self, 'STRING', parent) as rule:
             current = rule.current
             current.src += '"'
+            self.STRING_CONTENT(parent=current)
+            current.src += '"'
+        return current
+
+    def STRING_CONTENT(self, parent=None):
+        with CFG_UnlexerRuleContext(self, 'STRING_CONTENT', parent) as rule:
+            current = rule.current
             with CFG_QuantifierContext(rule, 0, 0, inf, querylangGenerator._quant_sizes[0], 0) as quant0:
                 while quant0(rule._name,querylangGenerator._lexicals):
                     with QuantifiedContext(rule):
@@ -291,13 +298,12 @@ class querylangGenerator(Generator):
                         if value not in current.src:
                             current.src += value
             current = rule.current
-            current.src += '"'
         return current
 
     def is_or_not(self, parent=None):
         with CFG_UnparserRuleContext(self, 'is_or_not', parent) as rule:
             current = rule.current
-            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[7], 0, querylangGenerator._alt_conds[0]) as alt0:
+            with AlternationContext(rule, 0, querylangGenerator._alt_sizes[8], 0, querylangGenerator._alt_conds[0]) as alt0:
                 current = rule.current
                 [self.T__15, self.T__28][alt0()](parent=current)
             current = rule.current
@@ -498,24 +504,25 @@ class querylangGenerator(Generator):
         'primary': RuleSize(5, 5),
         'binaryExpression': RuleSize(4, 5),
         'searchCondition': RuleSize(3, 5),
-        'dateSearch': RuleSize(5, 5),
-        'binaryDateSearch': RuleSize(4, 5),
-        'dateSearchinfo': RuleSize(3, 5),
-        'relativelydate': RuleSize(3, 5),
-        'absolutedate': RuleSize(2, 1),
-        'pathSearch': RuleSize(3, 5),
-        'nameSearch': RuleSize(3, 5),
-        'sizeSearch': RuleSize(3, 5),
-        'typeSearch': RuleSize(3, 5),
-        'durationSearch': RuleSize(3, 5),
-        'metaSearch': RuleSize(3, 13),
+        'dateSearch': RuleSize(6, 6),
+        'binaryDateSearch': RuleSize(5, 6),
+        'dateSearchinfo': RuleSize(4, 6),
+        'relativelydate': RuleSize(4, 6),
+        'absolutedate': RuleSize(3, 2),
+        'pathSearch': RuleSize(4, 6),
+        'nameSearch': RuleSize(4, 6),
+        'sizeSearch': RuleSize(4, 6),
+        'typeSearch': RuleSize(4, 6),
+        'durationSearch': RuleSize(4, 6),
+        'metaSearch': RuleSize(4, 15),
         'quantityCondition': RuleSize(2, 5),
-        'contentSearch': RuleSize(3, 5),
+        'contentSearch': RuleSize(4, 6),
         'comparison_type': RuleSize(2, 1),
-        'string': RuleSize(2, 1),
-        'filename': RuleSize(2, 1),
+        'string': RuleSize(3, 2),
+        'filename': RuleSize(3, 2),
         'SPACE': RuleSize(1, 1),
-        'STRING_VALUE': RuleSize(1, 1),
+        'STRING': RuleSize(2, 2),
+        'STRING_CONTENT': RuleSize(1, 1),
         'is_or_not': RuleSize(2, 1),
         'NUMBER_VALUE': RuleSize(1, 1),
         'T__0': RuleSize(1, 1),
@@ -552,12 +559,13 @@ class querylangGenerator(Generator):
     _alt_sizes = (
         (RuleSize(4, 8), RuleSize(4, 8)),  # 0
         (RuleSize(5, 7), RuleSize(3, 5)),  # 1
-        (RuleSize(5, 5), RuleSize(3, 5), RuleSize(3, 5), RuleSize(3, 5), RuleSize(3, 5), RuleSize(3, 5), RuleSize(3, 13), RuleSize(2, 5), RuleSize(3, 5)),  # 2
-        (RuleSize(3, 7), RuleSize(3, 5)),  # 3
-        (RuleSize(2, 5), RuleSize(3, 9)),  # 4
-        (RuleSize(2, 5), RuleSize(2, 7)),  # 5
-        (RuleSize(1, 1), RuleSize(1, 1), RuleSize(1, 1), RuleSize(1, 1), RuleSize(1, 1), RuleSize(1, 1)),  # 6
-        (RuleSize(1, 1), RuleSize(1, 1)),  # 7
+        (RuleSize(6, 6), RuleSize(4, 6), RuleSize(4, 6), RuleSize(4, 6), RuleSize(4, 6), RuleSize(4, 6), RuleSize(4, 15), RuleSize(2, 5), RuleSize(4, 6)),  # 2
+        (RuleSize(5, 9), RuleSize(5, 9)),  # 3
+        (RuleSize(4, 8), RuleSize(4, 6)),  # 4
+        (RuleSize(3, 6), RuleSize(4, 10)),  # 5
+        (RuleSize(3, 6), RuleSize(3, 8)),  # 6
+        (RuleSize(1, 1), RuleSize(1, 1), RuleSize(1, 1), RuleSize(1, 1), RuleSize(1, 1), RuleSize(1, 1)),  # 7
+        (RuleSize(1, 1), RuleSize(1, 1)),  # 8
     )
 
     _alt_conds = (
@@ -569,6 +577,7 @@ class querylangGenerator(Generator):
     _quant_sizes = (
         RuleSize(0, 0),  # 0
         RuleSize(4, 8),  # 1
+        RuleSize(5, 9),  # 2
     )
 
     _charsets = (
@@ -577,6 +586,6 @@ class querylangGenerator(Generator):
     )
     
     _lexicals = (
-        {'STRING_VALUE': '<|lexical_re_start|>'"'.*?'"'<|lexical_re_end|>'},
-        {'NUMBER_VALUE': '<|lexical_re_start|>[0-9]+<|lexical_re_end|>'},
+        {'STRING_CONTENT': '<re>.*?</re>'},
+        {'NUMBER_VALUE': '<re>[0-9]+</re>'},
     )

@@ -1,1 +1,0 @@
-NAME CONTAINS <|lexical_re_start|>'"'.*?'"'<|lexical_re_end|>
