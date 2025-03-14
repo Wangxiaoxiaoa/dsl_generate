@@ -1,17 +1,17 @@
 verify:
-  model_name: qwen/qwq-32b
+  model_name: deepseek/deepseek-v3/community
   prompt_path: pipelines/prompts/stage2_vertify.txt
   api_key: sk_1vNkoXwW5Uv9zqlWzhIk5Cc8VI8VRQbYKjFVwro8row
   url: https://api.ppinfra.com/v3/openai
 
 transform:
-  model_name: qwen/qwq-32b
+  model_name: deepseek/deepseek-v3/community
   prompt_path: pipelines/prompts/stage2_transform.txt 
   api_key: sk_1vNkoXwW5Uv9zqlWzhIk5Cc8VI8VRQbYKjFVwro8row
   url: https://api.ppinfra.com/v3/openai
 
 fill_regex:
-  model_name: qwen/qwq-32b
+  model_name: deepseek/deepseek-v3/community
   prompt_path: pipelines/prompts/stage2_fill_regex.txt
   api_key: sk_1vNkoXwW5Uv9zqlWzhIk5Cc8VI8VRQbYKjFVwro8row
   url: https://api.ppinfra.com/v3/openai
@@ -25,8 +25,8 @@ fill_regex:
 io_related:
   grammar_path: grammars_samples/querylang.g4
   grammar_help_path: grammars_samples/grammar_help.txt
-  stage1_output_path: tmp_qwq/stage1_output.txt 
-  stage2_output_path: tmp_qwq/stage2_output.txt
+  stage1_output_path: tmp_deepseek-v3-community/stage1_output.txt 
+  stage2_output_path: tmp_deepseek-v3-community/stage2_output.txt
 
 regex_related:
   re_lexical_rules_special_token: ["<re>", "</re>"]

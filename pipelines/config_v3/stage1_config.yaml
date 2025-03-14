@@ -6,8 +6,8 @@ re_lexical_rules: ["STRING_CONTENT", "NUMBER_VALUE"]
 re_lexical_rules_special_token: ["<re>", "</re>"]
 
 #generate
-num_samples: 2000
-output_dir: tmp_qwq/stage1_output.txt
+num_samples: 5000
+output_dir: tmp_deepseek-v3-community/stage1_output.txt
 max_depth: 100
 random_seed: 1
 jobs: 8

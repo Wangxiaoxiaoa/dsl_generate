@@ -1,5 +1,5 @@
 dsl2nl_server:
-  model_name: qwen/qwq-32b
+  model_name: deepseek/deepseek-r1/community
   prompt_path: pipelines/prompts/stage3_dsl2nl.txt 
   api_key: sk_1vNkoXwW5Uv9zqlWzhIk5Cc8VI8VRQbYKjFVwro8row
   url: https://api.ppinfra.com/v3/openai
@@ -10,13 +10,13 @@ dsl2nl_server:
   train_metric_threshold: 0.5
   
 verify:
-  model_name: qwen/qwq-32b
+  model_name: deepseek/deepseek-r1/community
   prompt_path: pipelines/prompts/stage3_vertify.txt 
   api_key: sk_1vNkoXwW5Uv9zqlWzhIk5Cc8VI8VRQbYKjFVwro8row
   url: https://api.ppinfra.com/v3/openai
 
 transform:
-  model_name: qwen/qwq-32b
+  model_name: deepseek/deepseek-r1/community
   prompt_path: pipelines/prompts/stage3_transform.txt 
   api_key: sk_1vNkoXwW5Uv9zqlWzhIk5Cc8VI8VRQbYKjFVwro8row
   url: https://api.ppinfra.com/v3/openai
@@ -24,8 +24,8 @@ transform:
 io_related:
   grammar_path: grammars_samples/querylang.g4
   grammar_help_path: grammars_samples/grammar_help.txt
-  stage2_output_path: tmp_qwq/stage2_output.txt
-  stage3_output_path: tmp_qwq/stage3_output.json
+  stage2_output_path: tmp_tmp_deepseek-r1/stage2_output.txt
+  stage3_output_path: tmp_tmp_deepseek-r1/stage3_output.json
   roles_path: pipelines/roles/persona.json
 
 control:
