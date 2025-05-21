@@ -1,5 +1,6 @@
-from grammarinator.tool.parser import ParserTool,ExtendedErrorListener,CommonTokenStream,logger
-from antlr4 import InputStream
+from grammarinator.tool.parser import ParserTool,CommonTokenStream,logger # Removed ExtendedErrorListener
+from antlr4 import InputStream, FileStream # Added FileStream
+from antlr4.error.ErrorListener import ErrorListener # Standard ANTLR error listener
 from os.path import basename, commonprefix, split, splitext
 from subprocess import CalledProcessError, PIPE, run
 from antlerinator import default_antlr_jar_path, __antlr_version__, download
@@ -33,8 +34,9 @@ class CFG_ParserTool():
             parser = file_endswith(f'Parser.{languages["python"]["ext"]}')
             listener = file_endswith(f'{languages["python"]["listener_format"]}.{languages["python"]["ext"]}')
 
-            if parser_dir not in sys.path:
-                sys.path.append(parser_dir)
+            abs_parser_dir = os.path.abspath(parser_dir)
+            if abs_parser_dir not in sys.path:
+                sys.path.append(abs_parser_dir)
 
             return (getattr(__import__(x, globals(), locals(), [x], 0), x) for x in [lexer, parser, listener])
         except Exception as e:
@@ -42,14 +44,37 @@ class CFG_ParserTool():
             raise
 
     def _create_tree(self, input_stream):
+        # Basic error listener to capture syntax errors
+        class SyntaxErrorListener(ErrorListener):
+            def __init__(self):
+                super().__init__()
+                self.syntax_errors = 0
+            def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+                self.syntax_errors += 1
+                # logger.debug(f"Syntax error at line {line}:{column} - {msg}") # Optional: log detailed errors
+
         try:
             lexer = self.lexer_cls(input_stream)
-            lexer.addErrorListener(ExtendedErrorListener())
-            parser = self.parser_cls(CommonTokenStream(lexer))
-            if parser._syntaxErrors:
+            lexer.removeErrorListeners() # Remove default console error listener
+            # lexer.addErrorListener(SyntaxErrorListener()) # Add our listener if needed, or rely on parser's
+
+            stream = CommonTokenStream(lexer)
+            parser = self.parser_cls(stream)
+            parser.removeErrorListeners() # Remove default console error listener
+            error_listener = SyntaxErrorListener()
+            parser.addErrorListener(error_listener)
+            
+            # Specify the entry point for parsing, e.g., 'query' or 'expression'
+            # This needs to match a rule in your grammar (e.g., querylang.g4)
+            # Assuming 'query' is the main entry rule in querylang.g4
+            parser.query() # Replace 'query' with your actual entry rule if different
+
+            if error_listener.syntax_errors > 0:
+                # logger.warning(f"Parsing failed with {error_listener.syntax_errors} syntax errors.")
                 return False
             return True
-        except:
+        except Exception as e:
+            # logger.error(f"Exception during parsing: {e}")
             return False
    
     def parse(self,dsl_text):
