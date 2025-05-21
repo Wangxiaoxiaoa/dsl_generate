@@ -14,6 +14,8 @@ from src.dspy.stage3_verify import verify
 from src.dspy.stage3_transform import transform
 from src.tools.save_file import save_file
 from src.tools.logger import Logger
+from src.parse.parse import CFG_ParserTool, build_grammars
+import os # Add os import for parser_dir
 
 logger = Logger("stage3")
 
@@ -37,6 +39,20 @@ RPM_LIMITER = RateLimiter(rpm=10)
 def process(config_sentence_pair):
     stage3_config, complete_sentence = config_sentence_pair
     
+    global dsl_parser
+    if dsl_parser is not None:
+        try:
+            if not dsl_parser.parse(complete_sentence):
+                logger.warning(f"DSL sentence failed parsing and will be skipped: {complete_sentence}")
+                return # Skip this sentence
+            else:
+                logger.info(f"DSL sentence parsed successfully: {complete_sentence}")
+        except Exception as e:
+            logger.error(f"Exception during DSL parsing for sentence '{complete_sentence}': {e}")
+            return # Skip this sentence on parsing exception
+    else:
+        logger.error("DSL parser not initialized. Skipping parsing validation.") # Should not happen if build_grammars was successful
+
     try:
         for _ in range(stage3_config.dsl2nl_epochs):
             RPM_LIMITER.wait()
@@ -153,6 +169,23 @@ def stage3(config_path):
         stage3_output_path, roles_path, dsl2nl_epochs,
         transform_epochs, num_jobs
     )
+    
+    # Build grammars for parsing
+    parser_dir = os.path.join(os.path.dirname(grammar_path), "generated_parser") # Define a directory for generated files
+    try:
+        logger.info(f"Building grammars from {grammar_path} into {parser_dir}...")
+        build_grammars(grammar_path, parser_dir)
+        logger.info("Grammars built successfully.")
+        # Instantiate the parser after building, to be passed to architecture or used in process
+        global dsl_parser # Make it global or pass it around
+        dsl_parser = CFG_ParserTool(grammar_path, parser_dir)
+        logger.info("DSL Parser initialized.")
+    except Exception as e:
+        logger.error(f"Failed to build grammars or initialize parser: {e}")
+        # Potentially exit if parser is critical
+        # For now, we'll let it continue and it will fail in the process function if parser not init
+        global dsl_parser
+        dsl_parser = None # Ensure it's defined
     
     architecture(stage3_config)
 
